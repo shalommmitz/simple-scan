@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+import requests, time, shutil, re
+
+host = "192.168.1.11"
+port = "8018"
+path = "/wsd/scan"
+
+url = "http://"+ host +":"+ port + path
+
+headers = {'Content-Type': 'application/soap+xml'}
+url = "http://192.168.1.11:8018/wsd/scan"
+
+def printResponse(res, op = ""):
+    print "\nResult of "+ op +":"
+    list = re.split("\<wsa:|\<wscn:", op)
+    list= res.text.split("<wsa:")
+    for l in list[1:]:
+        print "    <wsa:"+ l
+    print "\n=====================================================\n"
+
+def getValue(res, marker):
+    if not "<"+ marker +">" in res:
+        print "Expected '<"+ marker +">' in the text - but it is missing - Aborting"
+        exit(1)
+    value = res.split("<"+ marker +">")[1].split("</"+ marker +">")[0]
+    print marker, "value is", value
+    return value
+
+def setValue(res, value, marker):
+    if not "<"+ marker +">" in res:
+        print "Expected '<"+ marker +">' in the text - but it is missing - Aborting"
+        exit(1)
+    text = res.split("<"+ marker +">")[0] + "<"+ marker +">" + value + "</"+ marker +">" +res.split("</"+ marker +">")[1]
+    return text
+
+# Not really needed - as out parameters are hard coded.
+getAttrib = open("getAttrib.xml").read()
+res = requests.post(url, headers = headers , data = getAttrib)
+printResponse(res, "getAttrib")
+
+# Also not really needed.
+validateScanTicket = open("validateScanTicket.xml").read()
+res = requests.post(url, headers = headers , data = validateScanTicket)
+printResponse(res, "validateScanTicket")
+
+CreateScanJob = open("CreateScanJob.xml").read()
+res = requests.post(url, headers = headers , data = CreateScanJob)
+printResponse(res, "CreateScanJob")
+res = res.text
+jobId = getValue(res, "wscn:JobId")
+jobToken = getValue(res, "wscn:JobToken")
+
+print "Sleeping 22 seconds"
+time.sleep(22)
+print "Done sleeping"
+
+RetrieveImage = open("RetrieveImage.xml").read()
+RetrieveImage = setValue(RetrieveImage, jobId, "sca:JobId") 
+RetrieveImage = setValue(RetrieveImage, jobToken, "sca:JobToken") 
+res = requests.post(url, headers = headers , data = RetrieveImage, timeout=200)
+
+if not res.status_code == 200:
+    print "scanner did not return the expected '200' response code - Aborting"
+    exit()
+
+binaryData = res.content
+fileStartLoc = binaryData.find(b'\xff\xd8')
+
+open("image.jfif", 'wb').write(res.content[fileStartLoc:])

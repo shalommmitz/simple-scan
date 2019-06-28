@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+import requests, time, shutil, re
+
+host = "192.168.1.11"
+port = "8018"
+path = "/wsd/scan"
+
+url = "http://"+ host +":"+ port + path
+
+headers = {'Content-Type': 'application/soap+xml'}
+
+def getValue(res, marker):
+    if not "<"+ marker +">" in res:
+        print "Expected '<"+ marker +">' in the text - but it is missing - Aborting"
+        exit(1)
+    value = res.split("<"+ marker +">")[1].split("</"+ marker +">")[0]
+    print marker, "value is", value
+    return value
+
+def setValue(res, value, marker):
+    if not "<"+ marker +">" in res:
+        print "Expected '<"+ marker +">' in the text - but it is missing - Aborting"
+        exit(1)
+    text = res.split("<"+ marker +">")[0] + "<"+ marker +">" + value + "</"+ marker +">" +res.split("</"+ marker +">")[1]
+    return text
+
+# Intiate scan
+CreateScanJob = open("CreateScanJob.xml").read()
+res = requests.post(url, headers = headers , data = CreateScanJob)
+res = res.text
+jobId = getValue(res, "wscn:JobId")
+jobToken = getValue(res, "wscn:JobToken")
+
+# Get image from the scanner to the hard-disk
+RetrieveImage = open("RetrieveImage.xml").read()
+RetrieveImage = setValue(RetrieveImage, jobId, "sca:JobId") 
+RetrieveImage = setValue(RetrieveImage, jobToken, "sca:JobToken") 
+res = requests.post(url, headers = headers , data = RetrieveImage, timeout=200)
+
+if not res.status_code == 200:
+    print "scanner did not return the expected '200' response code - Aborting"
+    exit()
+
+binaryData = res.content
+fileStartLoc = binaryData.find(b'\xff\xd8')
+
+open("image.jfif", 'wb').write(res.content[fileStartLoc:])
