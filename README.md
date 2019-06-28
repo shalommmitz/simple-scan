@@ -1,6 +1,6 @@
-#Simple Scan - a minimal software to scan from network#
+# Simple Scan - a minimal software to scan from network
 
-##Introduction##
+## Introduction
 WSD (Web Services on Devices) is a common protocol used by network-based scanners that is not natively supported on Linux.
 Because of this, most persons cannot scan directly from MFPs (multi-function printer) to their Linux machines.
 
@@ -11,7 +11,7 @@ This software should work on any operating system on which Python 2.7.x is avail
 
 This software is not related in any way to the GNU software of the same name.
 
-##Customizing the 'scan' script for your use##
+## Customizing the 'scan' script for your use
 
 I have no idea if, after customizing this script it will work for you - but if it does, please open an issue, so other can share the insight you gained on your scanner. Also, please open an issue if you can get your modified script to work - I may be able to help.
 
@@ -23,12 +23,12 @@ We will need to following information:
 - What is the URL used to access WSD on your printer ?
 
 
-###Finding the IP or host name of your printer:###
+### Finding the IP or host name of your printer:
 Normally, you can find this information by looking at the settings of the printer.
 Also, you might find this information by looking at your central router.
 
 
-###Finding whether your printer uses WSD:###
+### Finding whether your printer uses WSD:
 There are few ways, which we will explore below.
 In any case, if your scanner does NOT work with WSD, this software is not of any use to you.
 
@@ -41,7 +41,7 @@ So, here are the various methods:
   - The final alternative is to record and analyze the network traffic of a scan-session, probably initiated by a windows machine, The good news is that the analysis will get us all the answers we need to proceed. The bad news is that the procedure is a bit complex. Consider this a learning experience :-)  
     A detailed 'how-to' for the network scan is present below. 
 
-###Finding the port used for scanning:###
+### Finding the port used for scanning:
 If you run the [python-ws-discovery](https://github.com/andreikop/python-ws-discovery.git), described above, it will show you the port number. 
 
 Another approach is to run nmap on the IP of the printer. The command will look like this:
@@ -50,7 +50,7 @@ nmap will probably report many ports, and the port that we need is one of those.
 Like before, the final alternative is to record and analyze the network traffic of a scan-session, as detailed below.
 
 
-###Recording and analyzing the network traffic###
+### Recording and analyzing the network traffic
 This procedure requires some knowledge, effort and maybe dedicated hardware.However,it is the best procedure to give us ALL the answers we need. Also, if you have never done this sort of thing, you might find it really interesting,as we will be looking at TCP/IP traffic, which is arguably the fundamental technology driving the Internet.
 
 So, here is the procedure:
@@ -78,16 +78,17 @@ So, here is the procedure:
 5. Export the HTTP packets
    We might need to customize the actual commands parameters (which are stored in the .xml files). For this end,we will now export the packets: In Wireshark, choose from the menu bar at the top: "File" --> "Export Objects" --> "HTTP". Then select "Save all", select a directory and click on "Open" to save all the packets.
    
-###Modify the 'scan' script to fit your scanner###
+### Modify the 'scan' script to fit your scanner
   Using any editor, change the values of the variables "host", "port" and "path".
 Step 5: Run the modified "./scan" script
   The scanner should start scanning and save the image as "image.jiff".
   Troubleshooting TBD
 
-###Creating new .xml files###
+### Creating new .xml files
+
 TBD
 
-# Author
+## Author
 
 **Shalom Mitz** - [shalommmitz](https://github.com/shalommmitz)
 
