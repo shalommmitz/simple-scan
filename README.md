@@ -86,3 +86,11 @@ Step 5: Run the modified "./scan" script
 
 ###Creating new .xml files###
 TBD
+
+# Author
+
+**Shalom Mitz** - [shalommmitz](https://github.com/shalommmitz)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE ) file for details.
