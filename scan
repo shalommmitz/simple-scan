@@ -44,4 +44,4 @@ if not res.status_code == 200:
 binaryData = res.content
 fileStartLoc = binaryData.find(b'\xff\xd8')
 
-open("image.jfif", 'wb').write(res.content[fileStartLoc:])
+open("image.jpeg", 'wb').write(res.content[fileStartLoc:])
