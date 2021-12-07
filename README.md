@@ -5,11 +5,17 @@ WSD (Web Services on Devices) is a common protocol used by network-based scanner
 Because of this, most persons cannot scan directly from MFPs (multi-function printer) to their Linux machines.
 
 Simple scan implements a small subset of the complex WSD protocol.
-While being VERY simple, it has enough functionality to successfully initiate scan and save resultant image, at least on the Xerox WorkCentre 3315 MFP.
+While being VERY simple, it has enough functionality to successfully initiate scan and save resultant image, at least on my Xerox WorkCentre 3315 MFP.
 
-This software should work on any operating system on which Python 2.7.x is available.
+This software should work on any operating system on which Python 3.x is available.
 
 This software is not related in any way to the GNU software of the same name.
+
+## Customizing the 'scan' script for your use - the quick version
+
+  - Using any editor, change the values of the variables "host", "port" and "path".
+  - Run the modified "./scan" script
+  - The scanner should start scanning and save the image as "image.jpeg".
 
 ## Customizing the 'scan' script for your use
 
@@ -42,12 +48,16 @@ So, here are the various methods:
     A detailed 'how-to' for the network scan is present below. 
 
 ### Finding the port used for scanning:
-If you run the [python-ws-discovery](https://github.com/andreikop/python-ws-discovery.git), described above, it will show you the port number. 
 
-Another approach is to run nmap on the IP of the printer. The command will look like this:
-   nmap -p- <IP of your scanner>
-nmap will probably report many ports, and the port that we need is one of those.
-Like before, the final alternative is to record and analyze the network traffic of a scan-session, as detailed below.
+ - Run the [python-ws-discovery](https://github.com/andreikop/python-ws-discovery.git), described above, it will show you the port number. 
+ - you might try [Python-WSD](https://github.com/roncapat/WSD-python)
+ - Another approach is to run nmap on the IP of the printer. The command will look like this:
+
+   `nmap -p- <IP of your scanner>`
+
+   nmap will probably report many ports, and the port that we need is one of those.
+ - Print the configuration pages for your printer and/or look at the administration site. Look for "WSD"
+ - The final alternative is to record and analyze the network traffic of a scan-session, as detailed below.
 
 
 ### Recording and analyzing the network traffic
@@ -78,12 +88,6 @@ So, here is the procedure:
 5. Export the HTTP packets
    We might need to customize the actual commands parameters (which are stored in the .xml files). For this end,we will now export the packets: In Wireshark, choose from the menu bar at the top: "File" --> "Export Objects" --> "HTTP". Then select "Save all", select a directory and click on "Open" to save all the packets.
    
-### Modify the 'scan' script to fit your scanner
-  Using any editor, change the values of the variables "host", "port" and "path".
-Step 5: Run the modified "./scan" script
-  The scanner should start scanning and save the image as "image.jiff".
-  Troubleshooting TBD
-
 ### Creating new .xml files
 
 TBD
